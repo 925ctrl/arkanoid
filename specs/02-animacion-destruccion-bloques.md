@@ -1,6 +1,6 @@
 # SPEC 02 — Animación de destrucción de bloques
 
-> **Estado:** Aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-11-10
 > **Objetivo:** Al romper un bloque, mostrar en su lugar la animación de explosión de 4 frames (`EXPLOSION_FRAMES`) durante `EXPLOSION_DURATION` ms antes de que desaparezca.
@@ -58,17 +58,17 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
-- [ ] Al romper un bloque, en su posición se muestran 4 frames de explosión distintos, en orden, y después el hueco queda vacío.
-- [ ] La animación dura 150 ms (`EXPLOSION_DURATION`), no más de 1 frame de diferencia a 60 Hz.
-- [ ] Los 7 colores muestran una explosión; el bloque gray muestra la de red.
-- [ ] La puntuación sube exactamente 5 puntos en el frame del golpe, no al terminar la animación.
-- [ ] La pelota atraviesa el hueco de un bloque que está explotando (no rebota contra él).
-- [ ] Romper varios bloques en frames consecutivos anima cada uno de forma independiente.
-- [ ] Al romper el último bloque, la explosión se ve completa y «Has ganado» aparece al terminar, no antes.
-- [ ] Si se pierde la pelota con una explosión en curso, esta termina sola y no queda ningún frame congelado.
-- [ ] Reiniciar desde «Game Over» o «Has ganado» deja los 175 bloques enteros y sin ninguna explosión residual.
-- [ ] No se añade ninguna dependencia ni paso de build.
+- [x] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
+- [x] Al romper un bloque, en su posición se muestran 4 frames de explosión distintos, en orden, y después el hueco queda vacío.
+- [x] La animación dura 150 ms (`EXPLOSION_DURATION`), no más de 1 frame de diferencia a 60 Hz.
+- [x] Los 7 colores muestran una explosión; el bloque gray muestra la de red.
+- [x] La puntuación sube exactamente 5 puntos en el frame del golpe, no al terminar la animación.
+- [x] La pelota atraviesa el hueco de un bloque que está explotando (no rebota contra él).
+- [x] Romper varios bloques en frames consecutivos anima cada uno de forma independiente.
+- [x] Al romper el último bloque, la explosión se ve completa y «Has ganado» aparece al terminar, no antes.
+- [x] Si se pierde la pelota con una explosión en curso, esta termina sola y no queda ningún frame congelado.
+- [x] Reiniciar desde «Game Over» o «Has ganado» deja los 175 bloques enteros y sin ninguna explosión residual.
+- [x] No se añade ninguna dependencia ni paso de build.
 
 ---
 
