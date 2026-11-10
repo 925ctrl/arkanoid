@@ -14,8 +14,19 @@ function stickBall(state) {
   state.ball.y = state.paddle.y - BALL_SIZE;
 }
 
+// Las explosiones avanzan en cualquier fase; EXPLOSION_DURATION es global de assets/spritesheet.js.
+function advanceExplosions(bricks, dt) {
+  for (const b of bricks) {
+    if (b.explodeT === null) continue;
+    b.explodeT += dt * 1000;
+    if (b.explodeT >= EXPLOSION_DURATION) b.explodeT = null;
+  }
+}
+
 export function update(state, input, dt) {
   const { paddle } = state;
+
+  advanceExplosions(state.bricks, dt);
 
   if (input.mouseX !== null) {
     paddle.x = input.mouseX - PADDLE_W / 2;
@@ -65,6 +76,7 @@ function hitBrick(state) {
   if (!brick) return;
 
   brick.alive = false;
+  brick.explodeT = 0;
   state.score += POINTS_PER_BRICK;
 
   const fromLeft = ball.x + BALL_SIZE - brick.x;
@@ -123,6 +135,7 @@ export function createState() {
         y: BRICK_TOP + row * BRICK_H,
         color: BRICK_COLORS[row],
         alive: true,
+        explodeT: null,
       });
     }
   }
