@@ -1,6 +1,8 @@
-import { W, H, BRICK_TOP, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, BALL_SIZE } from './config.js';
+import {
+  W, H, BRICK_TOP, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, BALL_SIZE, MUTE_BTN,
+} from './config.js';
 
-export function render(ctx, state) {
+export function render(ctx, state, muted) {
   ctx.clearRect(0, 0, W, H);
 
   for (const b of state.bricks) {
@@ -20,7 +22,10 @@ export function render(ctx, state) {
   ctx.font = '20px monospace';
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
-  ctx.fillText(`Puntos: ${state.score}`, 16, BRICK_TOP / 2);
+  ctx.fillText(`Puntos: ${state.score}`, 16, 56);
+  ctx.textAlign = 'center';
+  ctx.fillText(muted ? '🔇' : '🔊', MUTE_BTN.x + MUTE_BTN.w / 2, MUTE_BTN.y + MUTE_BTN.h / 2);
+  ctx.textAlign = 'left';
   for (let i = 0; i < state.lives; i++) {
     const x = W - 16 - (i + 1) * BALL_SIZE - i * 6;
     drawSprite(ctx, 'ball', x, (BRICK_TOP - BALL_SIZE) / 2, BALL_SIZE, BALL_SIZE);

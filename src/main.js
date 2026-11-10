@@ -1,6 +1,7 @@
 import { createState, update } from './game.js';
 import { createInput } from './input.js';
 import { render } from './render.js';
+import { createAudio } from './audio.js';
 
 const MAX_DT = 1 / 30; // evita saltos tras una pausa de pestaña
 
@@ -9,6 +10,7 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 const input = createInput(canvas);
+const audio = createAudio();
 let state = createState();
 let last = 0;
 
@@ -22,8 +24,14 @@ function frame(now) {
     }
   }
   input.restart = false;
+  if (input.toggleMute) {
+    audio.toggleMute();
+    input.toggleMute = false;
+  }
   update(state, input, dt);
-  render(ctx, state);
+  for (const name of state.sounds) audio.play(name);
+  state.sounds.length = 0;
+  render(ctx, state, audio.muted);
   requestAnimationFrame(frame);
 }
 
