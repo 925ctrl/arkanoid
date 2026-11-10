@@ -1,6 +1,7 @@
 import { createState, update } from './game.js';
 import { createInput } from './input.js';
 import { render } from './render.js';
+import { createAudio } from './audio.js';
 
 const MAX_DT = 1 / 30; // evita saltos tras una pausa de pestaña
 
@@ -9,6 +10,7 @@ const ctx = canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 const input = createInput(canvas);
+const audio = createAudio(); // se usa a partir del paso 2
 let state = createState();
 let last = 0;
 
