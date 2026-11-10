@@ -10,3 +10,4 @@ export const PADDLE_SPEED = 480;         // px/s con teclado
 export const MAX_BOUNCE_ANGLE = 60;      // grados respecto a la vertical
 export const LIVES = 3;
 export const POINTS_PER_BRICK = 5;
+export const MUTE_BTN = { x: 12, y: 4, w: 32, h: 28 }; // zona clicable del botón de silencio (coordenadas lógicas)

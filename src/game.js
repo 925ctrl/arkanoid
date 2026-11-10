@@ -46,8 +46,8 @@ export function update(state, input, dt) {
   input.launch = false;
 
   if (state.phase === 'playing') {
-    moveBall(state.ball, dt);
-    bounceOnPaddle(state.ball, paddle);
+    moveBall(state.ball, dt, state.sounds);
+    bounceOnPaddle(state.ball, paddle, state.sounds);
     hitBrick(state);
     if (state.bricks.every((b) => !b.alive && b.explodeT === null)) state.phase = 'won';
     else if (state.ball.y > H) loseLife(state);
@@ -78,6 +78,7 @@ function hitBrick(state) {
   brick.alive = false;
   brick.explodeT = 0;
   state.score += POINTS_PER_BRICK;
+  state.sounds.push('break');
 
   const fromLeft = ball.x + BALL_SIZE - brick.x;
   const fromRight = brick.x + BRICK_W - ball.x;
@@ -93,7 +94,7 @@ function hitBrick(state) {
 
 // Solo rebota si la pelota baja y solapa la paleta. El ángulo depende del
 // punto de impacto; la velocidad se mantiene en BALL_SPEED.
-function bounceOnPaddle(ball, paddle) {
+function bounceOnPaddle(ball, paddle, sounds) {
   if (ball.vy <= 0) return;
   const overlaps =
     ball.x + BALL_SIZE > paddle.x && ball.x < paddle.x + PADDLE_W &&
@@ -106,22 +107,26 @@ function bounceOnPaddle(ball, paddle) {
   ball.vx = BALL_SPEED * Math.sin(angle);
   ball.vy = -BALL_SPEED * Math.cos(angle);
   ball.y = paddle.y - BALL_SIZE;
+  sounds.push('bounce');
 }
 
-function moveBall(ball, dt) {
+function moveBall(ball, dt, sounds) {
   ball.x += ball.vx * dt;
   ball.y += ball.vy * dt;
 
   if (ball.x < 0) {
     ball.x = 0;
     ball.vx = Math.abs(ball.vx);
+    sounds.push('bounce');
   } else if (ball.x > W - BALL_SIZE) {
     ball.x = W - BALL_SIZE;
     ball.vx = -Math.abs(ball.vx);
+    sounds.push('bounce');
   }
   if (ball.y < 0) {
     ball.y = 0;
     ball.vy = Math.abs(ball.vy);
+    sounds.push('bounce');
   }
 }
 
@@ -151,5 +156,6 @@ export function createState() {
       vy: 0,
     },
     bricks,
+    sounds: [], // cola de sonidos del frame; la vacía main.js
   };
 }
