@@ -6,6 +6,12 @@ export function render(ctx, state) {
   for (const b of state.bricks) {
     if (b.alive) drawSprite(ctx, `block_${b.color}`, b.x, b.y, BRICK_W, BRICK_H);
   }
+  // 4 frames iguales durante EXPLOSION_DURATION (globales de assets/spritesheet.js).
+  for (const b of state.bricks) {
+    if (b.explodeT === null) continue;
+    const frame = Math.min(3, Math.floor(b.explodeT / (EXPLOSION_DURATION / 4)));
+    drawFrame(ctx, EXPLOSION_FRAMES[b.color][frame], b.x, b.y, BRICK_W, BRICK_H);
+  }
   drawSprite(ctx, 'paddle', state.paddle.x, state.paddle.y, PADDLE_W, PADDLE_H);
   drawSprite(ctx, 'ball', state.ball.x, state.ball.y, BALL_SIZE, BALL_SIZE);
 
