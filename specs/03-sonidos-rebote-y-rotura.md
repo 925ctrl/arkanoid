@@ -55,7 +55,7 @@ export const MUTE_BTN = { x: 12, y: 4, w: 32, h: 28 };   // zona clicable del bo
 Convenciones:
 
 - `game.js` sigue sin tocar el DOM: solo añade nombres a `state.sounds`, y `main.js` los pasa a `audio.play`.
-- `play(name)` reproduce un clon del `Audio` precargado (`cloneNode().play()`) para que los sonidos se solapen. La promesa rechazada se ignora con `.catch(() => {})`.
+- Cada MP3 se decodifica una sola vez a un `AudioBuffer` (Web Audio API). `play(name)` crea un `AudioBufferSourceNode` por reproducción, lo que permite solapar sonidos sin coste apreciable. El `AudioContext` se activa con `ctx.resume()` en el primer `keydown`/`pointerdown`.
 - Las lecturas y escrituras de `localStorage` van dentro de `try/catch`; si fallan, el silencio funciona solo en memoria.
 - HUD: el botón ocupa `MUTE_BTN` y el texto de puntos baja a `y = 56` (sigue dentro de la franja `y < BRICK_TOP`).
 
@@ -94,12 +94,12 @@ Convenciones:
 - **No:** sonar rebote y rotura a la vez al romper un bloque. Se solapan dos sonidos para un solo evento.
 - **Sí:** cola `state.sounds` que vacía `main.js`. `game.js` sigue siendo lógica pura, sin DOM, como en las SPEC 01 y 02.
 - **No:** llamar a `audio.play` directamente desde `game.js`. Acopla la lógica al navegador.
-- **Sí:** `HTMLAudioElement` + `cloneNode()` por reproducción. Basta para dos efectos cortos y permite solaparlos.
-- **No:** Web Audio API. Más código (decodificar buffers, contexto) sin beneficio para dos sonidos.
+- **No:** `HTMLAudioElement` + `cloneNode()` por reproducción. Cada clon monta una pipeline de media nueva en el hilo principal y causaba lag al romper bloques con el sonido activo.
+- **Sí:** Web Audio API con buffers predecodificados. Reproducir es crear una fuente barata, sin red ni decodificación.
 - **Sí:** silencio con `M` y botón en el canvas, persistido en `localStorage` (`arkanoid:muted`). Lo pidió el usuario.
 - **Sí:** botón dibujado en el canvas, no `<button>` HTML. Comparte el sistema de coordenadas lógicas y escala con el juego sin alinear nada con CSS.
 - **No:** control de volumen. Fuera de lo pedido.
-- **Sí:** errores de reproducción ignorados en silencio. La política de autoplay puede rechazar el primer `play()`; el juego no debe romperse por audio.
+- **Sí:** errores de audio ignorados en silencio. Si el contexto sigue suspendido o un buffer no cargó, `play()` no hace nada; el juego no debe romperse por audio.
 
 ---
 
@@ -107,8 +107,8 @@ Convenciones:
 
 | Riesgo                                                                 | Mitigación                                                                                                        |
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| La política de autoplay bloquea el sonido                              | El primer sonido llega tras lanzar la pelota (clic o Espacio, gesto del usuario). `play().catch(() => {})` evita errores. |
-| Muchos clones de `Audio` en rebotes rápidos                            | Los clones se liberan al terminar; a 360 px/s hay como mucho unos pocos rebotes por segundo.                      |
+| La política de autoplay deja el `AudioContext` suspendido              | `resume()` se llama en el primer `keydown`/`pointerdown`; mientras tanto `play()` no hace nada.                   |
+| Lag al reproducir con `cloneNode()` (observado con roturas seguidas)   | Sustituido por Web Audio con buffers decodificados una sola vez.                                                   |
 | El emoji `🔊`/`🔇` se ve distinto según el sistema operativo            | Aceptado: es solo un indicador; la zona clicable `MUTE_BTN` no depende de cómo se dibuje.                          |
 | `localStorage` lanza excepción (modo privado, cookies bloqueadas)       | Acceso dentro de `try/catch`; el silencio funciona en memoria durante la sesión.                                  |
 
@@ -118,6 +118,6 @@ Convenciones:
 
 - Control de volumen, música de fondo y sonidos de vida perdida, game over o victoria.
 - Sonido del golpe a un bloque resistente (SPEC 04).
-- Web Audio API o efectos de audio avanzados.
+- Efectos de audio avanzados (filtros, variación de tono, audio posicional).
 
 Cada uno de estos puntos, si se hace, va en su propia spec.

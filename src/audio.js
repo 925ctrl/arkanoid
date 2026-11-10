@@ -22,20 +22,36 @@ function writeMuted(muted) {
 }
 
 export function createAudio() {
-  const clips = {};
-  for (const [name, src] of Object.entries(SOUND_FILES)) {
-    clips[name] = new Audio(src);
-    clips[name].preload = 'auto';
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const ctx = AudioCtx ? new AudioCtx() : null;
+  const buffers = {};
+
+  if (ctx) {
+    // cada MP3 se decodifica una sola vez; reproducir solo crea una fuente barata
+    for (const [name, src] of Object.entries(SOUND_FILES)) {
+      fetch(src)
+        .then((res) => res.arrayBuffer())
+        .then((data) => ctx.decodeAudioData(data))
+        .then((buffer) => { buffers[name] = buffer; })
+        .catch(() => {}); // sin buffer, ese sonido simplemente no suena
+    }
+
+    // la política de autoplay exige un gesto del usuario para activar el contexto
+    const unlock = () => { ctx.resume().catch(() => {}); };
+    window.addEventListener('keydown', unlock);
+    window.addEventListener('pointerdown', unlock);
   }
 
   return {
     muted: readMuted(),
 
     play(name) {
-      if (this.muted || !clips[name]) return;
-      // un clon por reproducción permite solapar sonidos
+      if (this.muted || !ctx || ctx.state !== 'running' || !buffers[name]) return;
       try {
-        clips[name].cloneNode().play().catch(() => {});
+        const source = ctx.createBufferSource();
+        source.buffer = buffers[name];
+        source.connect(ctx.destination);
+        source.start();
       } catch {
         // el audio nunca debe romper el juego
       }
