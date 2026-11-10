@@ -1,6 +1,6 @@
 # SPEC 01 — MVP jugable de Arkanoid
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** ninguna (usa los assets existentes en `assets/`)
 > **Fecha:** 2026-11-10
 > **Objetivo:** Un Arkanoid jugable en el navegador con un nivel fijo, 3 vidas, puntuación, victoria/derrota y reinicio rápido.
@@ -84,21 +84,21 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Con `python3 -m http.server`, abrir `index.html` carga el juego sin errores ni avisos en la consola.
-- [ ] Se ven 175 bloques (7 filas × 25 columnas, sin hueco a los lados), con un color distinto por fila, la paleta y la pelota.
-- [ ] La paleta sigue al ratón y también se mueve con ←/→ y A/D, sin salir del canvas.
-- [ ] La pelota permanece pegada a la paleta hasta que se pulsa clic o Espacio.
-- [ ] La pelota rebota en paredes laterales y techo.
-- [ ] Golpear la paleta por su extremo derecho envía la pelota hacia la derecha y por el izquierdo hacia la izquierda; por el centro sube en vertical.
-- [ ] La velocidad de la pelota es la misma antes y después de cada rebote.
-- [ ] Romper un bloque lo hace desaparecer y suma exactamente 5 puntos.
-- [ ] Un bloque nunca se rompe sin que la pelota lo toque, y la pelota nunca lo atraviesa a velocidad normal.
-- [ ] Perder la pelota resta una vida y la pelota vuelve pegada a la paleta.
-- [ ] Con 0 vidas aparece "Game Over" y la pelota ya no se mueve.
-- [ ] Al romper los 175 bloques aparece "Has ganado".
-- [ ] Desde "Game Over" o "Has ganado", clic, Espacio o Enter reinicia con 3 vidas, 0 puntos y los 175 bloques.
-- [ ] Al redimensionar la ventana, el canvas se reescala sin deformarse y el ratón sigue alineado con la paleta.
-- [ ] No hay ninguna dependencia externa ni paso de build.
+- [x] Con `python3 -m http.server`, abrir `index.html` carga el juego sin errores ni avisos en la consola.
+- [x] Se ven 175 bloques (7 filas × 25 columnas, sin hueco a los lados), con un color distinto por fila, la paleta y la pelota.
+- [x] La paleta sigue al ratón y también se mueve con ←/→ y A/D, sin salir del canvas.
+- [x] La pelota permanece pegada a la paleta hasta que se pulsa clic o Espacio.
+- [x] La pelota rebota en paredes laterales y techo.
+- [x] Golpear la paleta por su extremo derecho envía la pelota hacia la derecha y por el izquierdo hacia la izquierda; por el centro sube en vertical.
+- [x] La velocidad de la pelota es la misma antes y después de cada rebote.
+- [x] Romper un bloque lo hace desaparecer y suma exactamente 5 puntos.
+- [x] Un bloque nunca se rompe sin que la pelota lo toque, y la pelota nunca lo atraviesa a velocidad normal.
+- [x] Perder la pelota resta una vida y la pelota vuelve pegada a la paleta.
+- [x] Con 0 vidas aparece "Game Over" y la pelota ya no se mueve.
+- [x] Al romper los 175 bloques aparece "Has ganado".
+- [x] Desde "Game Over" o "Has ganado", clic, Espacio o Enter reinicia con 3 vidas, 0 puntos y los 175 bloques.
+- [x] Al redimensionar la ventana, el canvas se reescala sin deformarse y el ratón sigue alineado con la paleta.
+- [x] No hay ninguna dependencia externa ni paso de build.
 
 ---
 

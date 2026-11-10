@@ -15,8 +15,10 @@ export function render(ctx, state) {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   ctx.fillText(`Puntos: ${state.score}`, 16, BRICK_TOP / 2);
-  ctx.textAlign = 'right';
-  ctx.fillText(`Vidas: ${state.lives}`, W - 16, BRICK_TOP / 2);
+  for (let i = 0; i < state.lives; i++) {
+    const x = W - 16 - (i + 1) * BALL_SIZE - i * 6;
+    drawSprite(ctx, 'ball', x, (BRICK_TOP - BALL_SIZE) / 2, BALL_SIZE, BALL_SIZE);
+  }
 
   if (state.phase === 'gameover' || state.phase === 'won') {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
