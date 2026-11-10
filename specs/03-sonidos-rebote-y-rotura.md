@@ -1,6 +1,6 @@
 # SPEC 03 — Sonidos de rebote y rotura de bloques
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01, SPEC 02
 > **Fecha:** 2026-11-10
 > **Objetivo:** Reproducir `ball-bounce.mp3` en cada rebote contra paleta, paredes o techo y `break-sound.mp3` al romper un bloque, con silencio alternable (tecla M o botón en el HUD) que se recuerda entre sesiones.
@@ -72,19 +72,19 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
-- [ ] Al rebotar la pelota en la paleta suena `ball-bounce.mp3`.
-- [ ] Al rebotar en la pared izquierda, en la derecha y en el techo suena `ball-bounce.mp3`.
-- [ ] Al romper un bloque suena `break-sound.mp3` y no suena `ball-bounce.mp3` en ese mismo golpe.
-- [ ] Romper dos bloques en menos de 200 ms reproduce dos sonidos de rotura solapados (el segundo no corta al primero).
-- [ ] Ningún sonido se reproduce mientras la pelota está pegada a la paleta en fase `ready`.
-- [ ] Pulsar `M` alterna entre silencio y sonido, y el icono del HUD cambia entre `🔇` y `🔊`.
-- [ ] Hacer clic en el icono alterna el silencio y no lanza la pelota ni reinicia la partida desde «Game Over» o «Has ganado».
-- [ ] Con el silencio activo no suena nada.
-- [ ] Tras recargar la página, el estado de silencio es el mismo que antes de recargar.
-- [ ] El icono queda encima del texto de puntos, sin solaparse con él ni con la primera fila de bloques.
-- [ ] Con `localStorage` bloqueado (p. ej. con las cookies deshabilitadas), el juego funciona y el silencio se puede alternar.
-- [ ] No se añade ninguna dependencia ni paso de build.
+- [x] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
+- [x] Al rebotar la pelota en la paleta suena `ball-bounce.mp3`.
+- [x] Al rebotar en la pared izquierda, en la derecha y en el techo suena `ball-bounce.mp3`.
+- [x] Al romper un bloque suena `break-sound.mp3` y no suena `ball-bounce.mp3` en ese mismo golpe.
+- [x] Romper dos bloques en menos de 200 ms reproduce dos sonidos de rotura solapados (el segundo no corta al primero).
+- [x] Ningún sonido se reproduce mientras la pelota está pegada a la paleta en fase `ready`.
+- [x] Pulsar `M` alterna entre silencio y sonido, y el icono del HUD cambia entre `🔇` y `🔊`.
+- [x] Hacer clic en el icono alterna el silencio y no lanza la pelota ni reinicia la partida desde «Game Over» o «Has ganado».
+- [x] Con el silencio activo no suena nada.
+- [x] Tras recargar la página, el estado de silencio es el mismo que antes de recargar.
+- [x] El icono queda encima del texto de puntos, sin solaparse con él ni con la primera fila de bloques.
+- [x] Con `localStorage` bloqueado (p. ej. con las cookies deshabilitadas), el juego funciona y el silencio se puede alternar.
+- [x] No se añade ninguna dependencia ni paso de build.
 
 ---
 
