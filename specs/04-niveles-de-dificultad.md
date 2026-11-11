@@ -1,6 +1,6 @@
 # SPEC 04 — Niveles de dificultad progresiva
 
-> **Estado:** Borrador
+> **Estado:** Implementado
 > **Depende de:** SPEC 01, SPEC 02, SPEC 03
 > **Fecha:** 2026-11-10
 > **Objetivo:** Encadenar niveles infinitos en ciclos de 7: cada nivel añade una fila de color y cada ciclo nuevo acorta la paleta, acelera la pelota y hace los bloques más resistentes.
@@ -89,24 +89,24 @@ Convenciones:
 
 ## Criterios de aceptación
 
-- [ ] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
-- [ ] El nivel 1 tiene exactamente 25 bloques azules (`block_green`) en una fila con `y = 80`.
-- [ ] El nivel 2 tiene 50 bloques: naranja en `y = 80` y azul en `y = 96`.
-- [ ] El nivel 7 tiene 175 bloques, de arriba abajo: gris, rojo, amarillo, verde, morado, naranja, azul.
-- [ ] El nivel 8 vuelve a 25 bloques azules en `y = 80`, cada uno necesita 2 golpes, la paleta mide 152 px y la pelota va a 370 px/s.
-- [ ] El nivel 15 (ciclo 3) tiene bloques de 3 golpes, paleta de 142 px y pelota a 380 px/s.
-- [ ] Desde el ciclo 5, los bloques necesitan siempre 5 golpes.
-- [ ] Desde el ciclo 11, la paleta mide siempre 70 px.
-- [ ] Desde el ciclo 13, la pelota va siempre a 480 px/s.
-- [ ] Un golpe que no rompe el bloque lo hace rebotar, suena `ball-bounce.mp3`, no suma puntos, no muestra explosión y el bloque se ve más oscuro.
-- [ ] El golpe que rompe el bloque muestra la explosión, suena `break-sound.mp3` y suma exactamente 5 puntos.
-- [ ] La velocidad de la pelota es la misma antes y después de cada rebote dentro de un nivel.
-- [ ] Al romper el último bloque, la explosión termina y después aparece «Nivel N superado»; la pelota no se mueve mientras se muestra.
-- [ ] Clic, Espacio o Enter en «Nivel N superado» carga el nivel N+1 con la pelota pegada y sin lanzarla, con los mismos puntos y vidas.
-- [ ] El HUD muestra «Nivel N» con el número correcto, sin solaparse con el botón de silencio, los puntos ni las vidas.
-- [ ] En «Game Over», reiniciar vuelve al nivel 1 con 3 vidas, 0 puntos, paleta de 162 px y pelota a 360 px/s.
-- [ ] La paleta más corta sigue limitada al canvas y el rebote por los extremos sigue desviando la pelota hacia ese lado.
-- [ ] No se añade ninguna dependencia ni paso de build.
+- [x] Con `python3 -m http.server`, el juego carga sin errores ni avisos en la consola.
+- [x] El nivel 1 tiene exactamente 25 bloques azules (`block_green`) en una fila con `y = 80`.
+- [x] El nivel 2 tiene 50 bloques: naranja en `y = 80` y azul en `y = 96`.
+- [x] El nivel 7 tiene 175 bloques, de arriba abajo: gris, rojo, amarillo, verde, morado, naranja, azul.
+- [x] El nivel 8 vuelve a 25 bloques azules en `y = 80`, cada uno necesita 2 golpes, la paleta mide 152 px y la pelota va a 370 px/s.
+- [x] El nivel 15 (ciclo 3) tiene bloques de 3 golpes, paleta de 142 px y pelota a 380 px/s.
+- [x] Desde el ciclo 5, los bloques necesitan siempre 5 golpes.
+- [x] Desde el ciclo 11, la paleta mide siempre 70 px.
+- [x] Desde el ciclo 13, la pelota va siempre a 480 px/s.
+- [x] Un golpe que no rompe el bloque lo hace rebotar, suena `ball-bounce.mp3`, no suma puntos, no muestra explosión y el bloque se ve más oscuro.
+- [x] El golpe que rompe el bloque muestra la explosión, suena `break-sound.mp3` y suma exactamente 5 puntos.
+- [x] La velocidad de la pelota es la misma antes y después de cada rebote dentro de un nivel.
+- [x] Al romper el último bloque, la explosión termina y después aparece «Nivel N superado»; la pelota no se mueve mientras se muestra.
+- [x] Clic, Espacio o Enter en «Nivel N superado» carga el nivel N+1 con la pelota pegada y sin lanzarla, con los mismos puntos y vidas.
+- [x] El HUD muestra «Nivel N» con el número correcto, sin solaparse con el botón de silencio, los puntos ni las vidas.
+- [x] En «Game Over», reiniciar vuelve al nivel 1 con 3 vidas, 0 puntos, paleta de 162 px y pelota a 360 px/s.
+- [x] La paleta más corta sigue limitada al canvas y el rebote por los extremos sigue desviando la pelota hacia ese lado.
+- [x] No se añade ninguna dependencia ni paso de build.
 
 ---
 

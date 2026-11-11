@@ -1,16 +1,17 @@
 import {
-  W, H, COLS, ROWS, BRICK_W, BRICK_H, BRICK_TOP, BRICK_COLORS,
-  PADDLE_W, PADDLE_H, PADDLE_Y, PADDLE_SPEED, BALL_SIZE, BALL_SPEED,
+  W, H, COLS, BRICK_W, BRICK_H, BRICK_TOP, LEVEL_COLORS, LEVELS_PER_CYCLE,
+  PADDLE_W, PADDLE_W_STEP, PADDLE_W_MIN, PADDLE_H, PADDLE_Y, PADDLE_SPEED,
+  BALL_SIZE, BALL_SPEED, BALL_SPEED_STEP, BALL_SPEED_MAX, MAX_HITS,
   MAX_BOUNCE_ANGLE, LIVES, POINTS_PER_BRICK,
 } from './config.js';
 
 function clampPaddle(paddle) {
-  paddle.x = Math.max(0, Math.min(W - PADDLE_W, paddle.x));
+  paddle.x = Math.max(0, Math.min(W - paddle.w, paddle.x));
 }
 
 // La pelota pegada sigue a la paleta, centrada sobre ella.
 function stickBall(state) {
-  state.ball.x = state.paddle.x + (PADDLE_W - BALL_SIZE) / 2;
+  state.ball.x = state.paddle.x + (state.paddle.w - BALL_SIZE) / 2;
   state.ball.y = state.paddle.y - BALL_SIZE;
 }
 
@@ -29,7 +30,7 @@ export function update(state, input, dt) {
   advanceExplosions(state.bricks, dt);
 
   if (input.mouseX !== null) {
-    paddle.x = input.mouseX - PADDLE_W / 2;
+    paddle.x = input.mouseX - paddle.w / 2;
     input.mouseX = null;
   }
   paddle.x += (Number(input.right) - Number(input.left)) * PADDLE_SPEED * dt;
@@ -40,16 +41,16 @@ export function update(state, input, dt) {
     if (input.launch) {
       state.phase = 'playing';
       state.ball.vx = 0;
-      state.ball.vy = -BALL_SPEED;
+      state.ball.vy = -state.ballSpeed;
     }
   }
   input.launch = false;
 
   if (state.phase === 'playing') {
     moveBall(state.ball, dt, state.sounds);
-    bounceOnPaddle(state.ball, paddle, state.sounds);
+    bounceOnPaddle(state.ball, paddle, state.ballSpeed, state.sounds);
     hitBrick(state);
-    if (state.bricks.every((b) => !b.alive && b.explodeT === null)) state.phase = 'won';
+    if (state.bricks.every((b) => !b.alive && b.explodeT === null)) state.phase = 'cleared';
     else if (state.ball.y > H) loseLife(state);
   }
 }
@@ -75,10 +76,15 @@ function hitBrick(state) {
     ball.y + BALL_SIZE > b.y && ball.y < b.y + BRICK_H);
   if (!brick) return;
 
-  brick.alive = false;
-  brick.explodeT = 0;
-  state.score += POINTS_PER_BRICK;
-  state.sounds.push('break');
+  brick.hp -= 1;
+  if (brick.hp > 0) {
+    state.sounds.push('bounce');
+  } else {
+    brick.alive = false;
+    brick.explodeT = 0;
+    state.score += POINTS_PER_BRICK;
+    state.sounds.push('break');
+  }
 
   const fromLeft = ball.x + BALL_SIZE - brick.x;
   const fromRight = brick.x + BRICK_W - ball.x;
@@ -93,19 +99,19 @@ function hitBrick(state) {
 }
 
 // Solo rebota si la pelota baja y solapa la paleta. El ángulo depende del
-// punto de impacto; la velocidad se mantiene en BALL_SPEED.
-function bounceOnPaddle(ball, paddle, sounds) {
+// punto de impacto; la velocidad se mantiene en ballSpeed.
+function bounceOnPaddle(ball, paddle, ballSpeed, sounds) {
   if (ball.vy <= 0) return;
   const overlaps =
-    ball.x + BALL_SIZE > paddle.x && ball.x < paddle.x + PADDLE_W &&
+    ball.x + BALL_SIZE > paddle.x && ball.x < paddle.x + paddle.w &&
     ball.y + BALL_SIZE > paddle.y && ball.y < paddle.y + PADDLE_H;
   if (!overlaps) return;
 
   const offset = Math.max(-1, Math.min(1,
-    (ball.x + BALL_SIZE / 2 - (paddle.x + PADDLE_W / 2)) / (PADDLE_W / 2)));
+    (ball.x + BALL_SIZE / 2 - (paddle.x + paddle.w / 2)) / (paddle.w / 2)));
   const angle = (offset * MAX_BOUNCE_ANGLE * Math.PI) / 180;
-  ball.vx = BALL_SPEED * Math.sin(angle);
-  ball.vy = -BALL_SPEED * Math.cos(angle);
+  ball.vx = ballSpeed * Math.sin(angle);
+  ball.vy = -ballSpeed * Math.cos(angle);
   ball.y = paddle.y - BALL_SIZE;
   sounds.push('bounce');
 }
@@ -130,32 +136,47 @@ function moveBall(ball, dt, sounds) {
   }
 }
 
-export function createState() {
-  const paddleX = (W - PADDLE_W) / 2;
+// Rellena el nivel (desde 1) conservando puntos y vidas. La fila más nueva va arriba.
+export function loadLevel(state, level) {
+  const rows = ((level - 1) % LEVELS_PER_CYCLE) + 1;
+  const cycle = Math.floor((level - 1) / LEVELS_PER_CYCLE) + 1;
+  const hits = Math.min(cycle, MAX_HITS);
   const bricks = [];
-  for (let row = 0; row < ROWS; row++) {
+  for (let row = 0; row < rows; row++) {
     for (let col = 0; col < COLS; col++) {
       bricks.push({
         x: col * BRICK_W,
         y: BRICK_TOP + row * BRICK_H,
-        color: BRICK_COLORS[row],
+        color: LEVEL_COLORS[rows - 1 - row],
         alive: true,
         explodeT: null,
+        hp: hits,
       });
     }
   }
-  return {
+  state.level = level;
+  state.hits = hits;
+  state.bricks = bricks;
+  state.ballSpeed = Math.min(BALL_SPEED_MAX, BALL_SPEED + BALL_SPEED_STEP * (cycle - 1));
+  state.paddle.w = Math.max(PADDLE_W_MIN, PADDLE_W - PADDLE_W_STEP * (cycle - 1));
+  state.paddle.x = (W - state.paddle.w) / 2;
+  state.phase = 'ready';
+  stickBall(state);
+}
+
+export function createState() {
+  const state = {
     phase: 'ready',
+    level: 1,
     score: 0,
     lives: LIVES,
-    paddle: { x: paddleX, y: PADDLE_Y },
-    ball: {
-      x: paddleX + (PADDLE_W - BALL_SIZE) / 2,
-      y: PADDLE_Y - BALL_SIZE,
-      vx: 0,
-      vy: 0,
-    },
-    bricks,
+    paddle: { x: 0, y: PADDLE_Y, w: PADDLE_W },
+    ball: { x: 0, y: 0, vx: 0, vy: 0 },
+    bricks: [],
+    hits: 1,
+    ballSpeed: BALL_SPEED,
     sounds: [], // cola de sonidos del frame; la vacía main.js
   };
+  loadLevel(state, 1);
+  return state;
 }
