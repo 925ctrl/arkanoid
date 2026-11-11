@@ -50,7 +50,7 @@ export function update(state, input, dt) {
     moveBall(state.ball, dt, state.sounds);
     bounceOnPaddle(state.ball, paddle, state.ballSpeed, state.sounds);
     hitBrick(state);
-    if (state.bricks.every((b) => !b.alive && b.explodeT === null)) state.phase = 'won';
+    if (state.bricks.every((b) => !b.alive && b.explodeT === null)) state.phase = 'cleared';
     else if (state.ball.y > H) loseLife(state);
   }
 }

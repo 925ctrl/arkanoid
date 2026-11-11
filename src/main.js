@@ -1,4 +1,4 @@
-import { createState, update } from './game.js';
+import { createState, loadLevel, update } from './game.js';
 import { createInput } from './input.js';
 import { render } from './render.js';
 import { createAudio } from './audio.js';
@@ -17,11 +17,10 @@ let last = 0;
 function frame(now) {
   const dt = Math.min((now - last) / 1000, MAX_DT);
   last = now;
-  if (state.phase === 'gameover' || state.phase === 'won') {
-    if (input.restart) {
-      state = createState();
-      input.launch = false; // el mismo clic/Espacio no debe lanzar la pelota
-    }
+  if (input.restart && (state.phase === 'gameover' || state.phase === 'cleared')) {
+    if (state.phase === 'gameover') state = createState();
+    else loadLevel(state, state.level + 1);
+    input.launch = false; // el mismo clic/Espacio no debe lanzar la pelota
   }
   input.restart = false;
   if (input.toggleMute) {
