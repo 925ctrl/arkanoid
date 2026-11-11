@@ -6,7 +6,12 @@ export function render(ctx, state, muted) {
   ctx.clearRect(0, 0, W, H);
 
   for (const b of state.bricks) {
-    if (b.alive) drawSprite(ctx, `block_${b.color}`, b.x, b.y, BRICK_W, BRICK_H);
+    if (!b.alive) continue;
+    drawSprite(ctx, `block_${b.color}`, b.x, b.y, BRICK_W, BRICK_H);
+    if (b.hp < state.hits) {
+      ctx.fillStyle = `rgba(0, 0, 0, ${0.5 * (1 - b.hp / state.hits)})`;
+      ctx.fillRect(b.x, b.y, BRICK_W, BRICK_H);
+    }
   }
   // 4 frames iguales durante EXPLOSION_DURATION (globales de assets/spritesheet.js).
   for (const b of state.bricks) {

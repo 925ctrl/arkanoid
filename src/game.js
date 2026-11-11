@@ -1,7 +1,7 @@
 import {
   W, H, COLS, BRICK_W, BRICK_H, BRICK_TOP, LEVEL_COLORS, LEVELS_PER_CYCLE,
   PADDLE_W, PADDLE_W_STEP, PADDLE_W_MIN, PADDLE_H, PADDLE_Y, PADDLE_SPEED,
-  BALL_SIZE, BALL_SPEED, BALL_SPEED_STEP, BALL_SPEED_MAX,
+  BALL_SIZE, BALL_SPEED, BALL_SPEED_STEP, BALL_SPEED_MAX, MAX_HITS,
   MAX_BOUNCE_ANGLE, LIVES, POINTS_PER_BRICK,
 } from './config.js';
 
@@ -76,10 +76,15 @@ function hitBrick(state) {
     ball.y + BALL_SIZE > b.y && ball.y < b.y + BRICK_H);
   if (!brick) return;
 
-  brick.alive = false;
-  brick.explodeT = 0;
-  state.score += POINTS_PER_BRICK;
-  state.sounds.push('break');
+  brick.hp -= 1;
+  if (brick.hp > 0) {
+    state.sounds.push('bounce');
+  } else {
+    brick.alive = false;
+    brick.explodeT = 0;
+    state.score += POINTS_PER_BRICK;
+    state.sounds.push('break');
+  }
 
   const fromLeft = ball.x + BALL_SIZE - brick.x;
   const fromRight = brick.x + BRICK_W - ball.x;
@@ -134,6 +139,8 @@ function moveBall(ball, dt, sounds) {
 // Rellena el nivel (desde 1) conservando puntos y vidas. La fila más nueva va arriba.
 export function loadLevel(state, level) {
   const rows = ((level - 1) % LEVELS_PER_CYCLE) + 1;
+  const cycle = Math.floor((level - 1) / LEVELS_PER_CYCLE) + 1;
+  const hits = Math.min(cycle, MAX_HITS);
   const bricks = [];
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < COLS; col++) {
@@ -143,11 +150,12 @@ export function loadLevel(state, level) {
         color: LEVEL_COLORS[rows - 1 - row],
         alive: true,
         explodeT: null,
+        hp: hits,
       });
     }
   }
-  const cycle = Math.floor((level - 1) / LEVELS_PER_CYCLE) + 1;
   state.level = level;
+  state.hits = hits;
   state.bricks = bricks;
   state.ballSpeed = Math.min(BALL_SPEED_MAX, BALL_SPEED + BALL_SPEED_STEP * (cycle - 1));
   state.paddle.w = Math.max(PADDLE_W_MIN, PADDLE_W - PADDLE_W_STEP * (cycle - 1));
@@ -165,6 +173,7 @@ export function createState() {
     paddle: { x: 0, y: PADDLE_Y, w: PADDLE_W },
     ball: { x: 0, y: 0, vx: 0, vy: 0 },
     bricks: [],
+    hits: 1,
     ballSpeed: BALL_SPEED,
     sounds: [], // cola de sonidos del frame; la vacía main.js
   };
