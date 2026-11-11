@@ -29,6 +29,7 @@ export function render(ctx, state, muted) {
   ctx.textAlign = 'left';
   ctx.fillText(`Puntos: ${state.score}`, 16, 56);
   ctx.textAlign = 'center';
+  ctx.fillText(`Nivel ${state.level}`, W / 2, 56);
   ctx.fillText(muted ? '🔇' : '🔊', MUTE_BTN.x + MUTE_BTN.w / 2, MUTE_BTN.y + MUTE_BTN.h / 2);
   ctx.textAlign = 'left';
   for (let i = 0; i < state.lives; i++) {
@@ -36,14 +37,15 @@ export function render(ctx, state, muted) {
     drawSprite(ctx, 'ball', x, (BRICK_TOP - BALL_SIZE) / 2, BALL_SIZE, BALL_SIZE);
   }
 
-  if (state.phase === 'gameover' || state.phase === 'won') {
+  if (state.phase === 'gameover' || state.phase === 'cleared') {
+    const cleared = state.phase === 'cleared';
     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.font = '48px monospace';
-    ctx.fillText(state.phase === 'won' ? 'Has ganado' : 'Game Over', W / 2, H / 2 - 20);
+    ctx.fillText(cleared ? `Nivel ${state.level} superado` : 'Game Over', W / 2, H / 2 - 20);
     ctx.font = '20px monospace';
-    ctx.fillText('Clic, Espacio o Enter para reiniciar', W / 2, H / 2 + 30);
+    ctx.fillText(cleared ? 'Clic, Espacio o Enter para continuar' : 'Clic, Espacio o Enter para reiniciar', W / 2, H / 2 + 30);
   }
 }
