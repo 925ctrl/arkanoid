@@ -1,6 +1,6 @@
 # SPEC 04 — Niveles de dificultad progresiva
 
-> **Estado:** Borrador
+> **Estado:** Aprobado
 > **Depende de:** SPEC 01, SPEC 02, SPEC 03
 > **Fecha:** 2026-11-10
 > **Objetivo:** Encadenar niveles infinitos en ciclos de 7: cada nivel añade una fila de color y cada ciclo nuevo acorta la paleta, acelera la pelota y hace los bloques más resistentes.

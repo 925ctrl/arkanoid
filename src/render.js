@@ -1,5 +1,5 @@
 import {
-  W, H, BRICK_TOP, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, BALL_SIZE, MUTE_BTN,
+  W, H, BRICK_TOP, BRICK_W, BRICK_H, PADDLE_H, BALL_SIZE, MUTE_BTN,
 } from './config.js';
 
 export function render(ctx, state, muted) {
@@ -14,7 +14,7 @@ export function render(ctx, state, muted) {
     const frame = Math.min(3, Math.floor(b.explodeT / (EXPLOSION_DURATION / 4)));
     drawFrame(ctx, EXPLOSION_FRAMES[b.color][frame], b.x, b.y, BRICK_W, BRICK_H);
   }
-  drawSprite(ctx, 'paddle', state.paddle.x, state.paddle.y, PADDLE_W, PADDLE_H);
+  drawSprite(ctx, 'paddle', state.paddle.x, state.paddle.y, state.paddle.w, PADDLE_H);
   drawSprite(ctx, 'ball', state.ball.x, state.ball.y, BALL_SIZE, BALL_SIZE);
 
   // HUD en la franja superior (y < BRICK_TOP)
